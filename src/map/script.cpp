@@ -11902,8 +11902,10 @@ static int buildin_announce_sub(struct block_list *bl, va_list ap)
 	short fontY     = (short)va_arg(ap, int);
 	if (fontColor)
 		clif_broadcast2(bl, mes, len, strtol(fontColor, (char **)nullptr, 0), fontType, fontSize, fontAlign, fontY, SELF);
+		clif_broadcast2(bl, mes, len, strtol(fontColor, (char **)NULL, 0), fontType, fontSize, fontAlign, fontY, SELF2);	
 	else
 		clif_broadcast(bl, mes, len, type, SELF);
+		clif_broadcast(bl, mes, len, type, SELF2);
 	return SCRIPT_CMD_SUCCESS;
 }
 

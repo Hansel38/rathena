@@ -236,6 +236,7 @@ enum send_target : uint8_t {
 	BG_AREA_WOS,
 
 	CLAN,				// Clan System
+	SELF2,
 };
 
 enum broadcast_flags : uint8_t {

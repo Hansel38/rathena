@@ -236,8 +236,65 @@ static const char* atcommand_help_string( const char* command ){
 	// push the result from the method
 	return info->help.c_str();
 }
+//penambahan fungsi baru block disini
+ACMD_FUNC(blockbc)
+{
+	if (!message || !*message )
+	{
+		clif_displaymessage(fd, "Enter parameter. @blockbc <parameter>");
+		clif_displaymessage(fd, "Parameters:");
+		clif_displaymessage(fd, "        PARTY - block incoming broadcasts from party.");
+		clif_displaymessage(fd, "        GUILD - block incoming broadcasts from guild.");
+		clif_displaymessage(fd, "        BG - block incoming broadcasts from battleground.");
+		clif_displaymessage(fd, "        CLAN - block incoming broadcasts from clan.");
+		clif_displaymessage(fd, "        MAP - block all incoming broadcasts from the current map.");
+		clif_displaymessage(fd, "        ALL - block all incoming broadcasts.");
+		return -1;
+	}
+	if ( strncmp(message, "party", 3) == 0 )
+	{
+		sd->state.blockbc = 1;
+		clif_displaymessage(fd, "You will not receive party broadcasts.");
+	}
+	else if ( strncmp(message, "guild", 3) == 0 )
+	{
+		sd->state.blockbc = 2;
+		clif_displaymessage(fd, "You will not receive guild broadcasts.");
+	}
+	else if ( strcmp(message, "bg") == 0 || strncmp(message, "battleground", 3) == 0 )
+	{
+		sd->state.blockbc = 3;
+		clif_displaymessage(fd, "You will not receive battleground broadcasts.");
+	}
+	else if ( strncmp(message, "clan", 3) == 0 )
+	{
+		sd->state.blockbc = 4;
+		clif_displaymessage(fd, "You will not receive clan broadcasts.");
+	}
+	else if ( strcmp(message, "map") == 0 )
+	{
+		sd->state.blockbc = 5;
+		clif_displaymessage(fd, "You will not receive map broadcasts.");
+	}
+	else if ( strcmp(message, "all") == 0 )
+	{
+		sd->state.blockbc = 6;
+		clif_displaymessage(fd, "You will not receive any broadcasts.");
+	}
+	else
+		clif_displaymessage(fd, "Invalid parameter. Use @blockbc to check parameters.");
+	return 0;
+}
 
-
+ACMD_FUNC(unblockbc)
+{
+	if (sd->state.blockbc)
+	{
+		sd->state.blockbc = 0;
+		clif_displaymessage(fd, "You will receive broadcasts again.");
+	}
+	return 0;
+}
 /*==========================================
  * @send (used for testing packet sends from the client)
  *------------------------------------------*/
@@ -11046,6 +11103,8 @@ void atcommand_basecommands(void) {
 	 **/
 	AtCommandInfo atcommand_base[] = {
 #include <custom/atcommand_def.inc>
+		ACMD_DEF(blockbc),
+ACMD_DEF(unblockbc),
 		ACMD_DEF2R("warp", mapmove, ATCMD_NOCONSOLE),
 		ACMD_DEF(where),
 		ACMD_DEF(jumpto),

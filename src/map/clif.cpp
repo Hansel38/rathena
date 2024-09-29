@@ -493,6 +493,8 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 	case ALL_CLIENT: //All player clients.
 		iter = mapit_getallusers();
 		while( ( tsd = (map_session_data*)mapit_next( iter ) ) != nullptr ){
+			if ( tsd->state.blockbc == 6 ) 
+			continue;
 			if( session_isActive( fd = tsd->fd ) ){
 				WFIFOHEAD( fd, len );
 				memcpy( WFIFOP( fd, 0 ), buf, len );
@@ -505,6 +507,8 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 	case ALL_SAMEMAP: //All players on the same map
 		iter = mapit_getallusers();
 		while( ( tsd = (map_session_data*)mapit_next( iter ) ) != nullptr ){
+			if ( tsd->state.blockbc >= 5 ) 
+			continue;
 			if( bl->m == tsd->bl.m && session_isActive( fd = tsd->fd ) ){
 				WFIFOHEAD( fd, len );
 				memcpy( WFIFOP( fd, 0 ), buf, len );
@@ -592,6 +596,8 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 
 			iter = mapit_getallusers();
 			while( ( tsd = (map_session_data*)mapit_next( iter ) ) != nullptr ){
+				if ( tsd->state.blockbc == 6 || tsd->state.blockbc == 1 )
+					continue;
 				if( tsd->partyspy == p->party.party_id && session_isActive( fd = tsd->fd ) ){
 					WFIFOHEAD( fd, len );
 					memcpy( WFIFOP( fd, 0 ), buf, len );
@@ -618,7 +624,8 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 		}
 		mapit_free(iter);
 		break;
-
+	case SELF2:
+		if ( sd->state.blockbc > 4 ) break;
 	case SELF:
 		if( clif_session_isValid(sd) ){
 			fd = sd->fd;
@@ -672,6 +679,8 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 
 		iter = mapit_getallusers();
 		while( ( tsd = (map_session_data*)mapit_next( iter ) ) != nullptr ){
+			if ( tsd->state.blockbc == 6 || tsd->state.blockbc == 2 )
+				continue;
 			if( tsd->guildspy == g.guild_id && session_isActive( fd = tsd->fd ) ){
 				WFIFOHEAD( fd, len );
 				memcpy( WFIFOP( fd, 0 ), buf, len );
@@ -703,6 +712,8 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 					continue;
 				if( (type == BG_AREA || type == BG_AREA_WOS) && (sd->bl.x < x0 || sd->bl.y < y0 || sd->bl.x > x1 || sd->bl.y > y1) )
 					continue;
+				if ( tsd->state.blockbc == 6 || tsd->state.blockbc == 3 )
+					continue;
 				WFIFOHEAD(fd,len);
 				memcpy(WFIFOP(fd,0), buf, len);
 				WFIFOSET(fd,len);
@@ -728,6 +739,8 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 
 			iter = mapit_getallusers();
 			while( ( tsd = (map_session_data*)mapit_next( iter ) ) != nullptr ){
+				if ( tsd->state.blockbc == 6 || tsd->state.blockbc == 4 )
+					continue;				
 				if( tsd->clanspy == clan->id && session_isActive( fd = tsd->fd ) ){
 					WFIFOHEAD(fd, len);
 					memcpy(WFIFOP(fd, 0), buf, len);

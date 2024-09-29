@@ -449,6 +449,7 @@ public:
 		// Bitmask of e_pcblock_action_flag values
 		uint16 block_action;
 		bool refineui_open;
+		unsigned int blockbc : 1; // Menambahkan Variabel blockbc
 		t_itemid inventory_expansion_confirmation;
 		uint16 inventory_expansion_amount;
 		t_itemid laphine_synthesis;
